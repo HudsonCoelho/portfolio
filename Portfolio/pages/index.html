@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hudson Coelho</title>
+
+    <link rel="stylesheet" href="/Portfolio/styles/styles.css" />
+  </head>
+
+  <body>
+    <header class="center">
+      <img src="/Portfolio/img/perfil.jpg" alt="Hudson Coelho" />
+
+      <h1 id="meuNome"></h1>
+
+      <h2 id="tituloProfissional"></h2>
+    </header>
+
+    <main>
+      <section id="bioCompleto">
+        <p id="textoBioCompleto"></p>
+      </section>
+    </main>
+
+    <section id="quiz">
+      <h2>Descubra seu Clã</h2>
+      <p>Qual é seu estilo de desenvolvimento?</p>
+
+      <button id="btn-visual">🎨 Criativo e Visual</button>
+      <button id="btn-logica">⚙️ Lógico e Estratégico</button>
+      <button id="btn-hyuga">👁️ Preciso e Detalhista</button>
+      <button id="btn-uzumaki">⚡ Inovador e Persistente</button>
+
+      <div id="resultado-quiz"></div>
+    </section>
+    <section id="interacao">
+      <h2>Interação Ninja</h2>
+      <button id="mudaTexto">Clique aqui para mudar o texto.</button>
+
+      <div class="bloco-paragrafos">
+        <p class="paragrafo">Status de Chakra</p>
+        <p class="paragrafo">Aceitar Missão</p>
+        <p class="paragrafo">Contador Cliques </p>
+      </div>
+
+      <div class="caixa-input">
+        <div id="caixa">Sou uma caixa</div>
+        <input type="text" id="nome" name="usuario" placeholder="Digite seu nome aqui" />
+        <button id="enviar">Enviar</button>
+      </div>
+    </section>
+    <section id="pontuacao-ninja">
+      <h2>🏆 Pontuação Ninja</h2>
+      <div class="ninja-stats">
+        <div class="stat-box">
+          <p class="stat-label">Pontos Totais</p>
+          <p class="stat-valor" id="pontosTotais">0</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-label">Nível Ninja</p>
+          <p class="stat-valor" id="nivelNinja">Genin</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-label">Missões Completadas</p>
+          <p class="stat-valor" id="missoesCompletas">0</p>
+        </div>
+      </div>
+      <div class="barra-progresso">
+        <div class="barra-preenchida" id="barraProgresso"></div>
+      </div>
+      <p class="texto-progresso" id="textoProgresso"></p>
+    </section>
+
+    <section id="skills">
+      <h2>Minhas Habilidades</h2>
+      <div id="minhasSkills"></div>
+    </section>
+
+    <section id="projetos">
+      <h2>Missões Ninja</h2>
+      <div class="filtros-missao">
+        <label for="filtroStatus">Missão:</label>
+        <select id="filtroStatus">
+          <option value="Todos">Todas</option>
+        </select>
+
+        <label for="filtroRank">Rank:</label>
+        <select id="filtroRank">
+          <option value="Todos">Todos</option>
+        </select>
+      </div>
+      <div id="containerProjetos"></div>
+    </section><section class="secaoNaruto">
+      <div class="topoNaruto">
+        <div class="simboloFolha">🍥</div>
+
+        <h2>NINJA <span>ALEATÓRIO</span></h2>
+      </div>
+
+      <button id="btnNinja">🍥 INVOCAR NINJA</button>
+
+      <p id="statusNinja"></p>
+
+      <div id="ninja"></div>
+
+      <div class="olhos">
+        <div class="olho direito">
+          <div class="sharingan">
+            <div class="pupila"></div>
+            <div class="tomoe t1"></div>
+            <div class="tomoe t2"></div>
+            <div class="tomoe t3"></div>
+          </div>
+        </div>
+        <div class="olho esquerdo">
+          <div class="sharingan">
+            <div class="pupila"></div>
+            <div class="tomoe t1"></div>
+            <div class="tomoe t2"></div>
+            <div class="tomoe t3"></div>
+          </div>
+        </div>        
+      </div>
+    </section>
+
+    <footer>
+      <a
+        href="https://github.com/hudsoncoelho"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="/Portfolio/img/github-mark-white.png" alt="GitHub" />
+      </a>
+
+      <a
+        href="https://www.linkedin.com/in/hudson-coelho-silva"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="/Portfolio/img/LinkedIn_icon.svg" alt="LinkedIn" />
+      </a>
+
+      <a
+        href="https://www.youtube.com/@HudsonCoelho"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="/Portfolio/img/youtube-svgrepo-com.svg" alt="YouTube" />
+      </a>
+    </footer>
+
+    <script src="/Portfolio/scripts/script.js"></script>
+  </body>
+</html>
