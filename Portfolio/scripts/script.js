@@ -49,14 +49,14 @@ let pontosUzumaki = 0;
 // ───────────────── SKILLS ─────────────────
 
 let minhasSkills = [
-    "Python",
-    "Desenvolvimento Web/Fullstack",
-    "JavaScript",
-    "React",
-    "Node.js",
-    "Banco de Dados",
-    "Git",
-    "Design focado no usuário",
+    { emoji: "🐍", label: "Python", chakra: "jutsu-fuuton" },
+    { emoji: "🌐", label: "Desenvolvimento Web/Fullstack", chakra: "jutsu-suiton" },
+    { emoji: "⚡", label: "JavaScript", chakra: "jutsu-raito" },
+    { emoji: "⚛️", label: "React", chakra: "jutsu-katon" },
+    { emoji: "🟢", label: "Node.js", chakra: "jutsu-fuuton" },
+    { emoji: "💾", label: "Banco de Dados", chakra: "jutsu-doton" },
+    { emoji: "🌿", label: "Git", chakra: "jutsu-doton" },
+    { emoji: "🎨", label: "Design focado no usuário", chakra: "jutsu-katon" },
 ];
 
 // ───────────────── PROJETOS ─────────────────
@@ -101,6 +101,18 @@ let projetos = [
 
         descricao: "Criar um sistema desktop para controlar locais de estacionamento e otimizar as rotas dos shinobi.",
     },
+
+    {
+        nome: "Operação FarmaFácil",
+        rank: "Genin",
+        status: "Concluída",
+
+        tecnologias: ["HTML/CSS/JavaScript"],
+
+        conhecimentosAplicados: ["Desenvolvimento Web", "Design Responsivo", "Manipulação de DOM"],
+
+        descricao: "Desenvolver um portal farmacêutico estático completo com 9 páginas integradas (cadastro, login, estoques, telemedicina e acompanhamento de pedidos).",
+    },
 ];
 
 function mostrarTexto(id, texto) {
@@ -117,6 +129,74 @@ function carregarInformacoes() {
 
     mostrarTexto("tituloProfissional", tituloProfissional);
 
+    atualizarDatabookCard();
+}
+
+// ───────────────── DATABOOK NINJA CARD ─────────────────
+
+const ninjaStats = {
+    ninjutsu: 4.6, // Lógica & Back-End
+    speed: 4.2,    // Velocidade de entrega / Git
+    taijutsu: 4.0,  // Habilidades de design / Front-End
+    genjutsu: 3.8,  // Experiência do usuário (UI/UX)
+    stamina: 4.5    // Banco de dados & Infraestrutura
+};
+
+function calcularCoordenadasRadar(stats) {
+    const cx = 100;
+    const cy = 100;
+    const rMax = 75; // Raio máximo do pentágono nível 4
+
+    // Fórmulas para calcular os pontos de um pentágono regular em SVG
+    const rNin = (stats.ninjutsu / 5) * rMax;
+    const rSpe = (stats.speed / 5) * rMax;
+    const rTai = (stats.taijutsu / 5) * rMax;
+    const rGen = (stats.genjutsu / 5) * rMax;
+    const rSta = (stats.stamina / 5) * rMax;
+
+    const p1 = { x: cx, y: cy - rNin };
+    const p2 = { x: cx + rSpe * Math.cos(-Math.PI / 10), y: cy + rSpe * Math.sin(-Math.PI / 10) };
+    const p3 = { x: cx + rTai * Math.cos(3 * Math.PI / 10), y: cy + rTai * Math.sin(3 * Math.PI / 10) };
+    const p4 = { x: cx - rGen * Math.cos(3 * Math.PI / 10), y: cy + rGen * Math.sin(3 * Math.PI / 10) }; // Espelhado à esquerda
+    const p5 = { x: cx - rSta * Math.cos(-Math.PI / 10), y: cy + rSta * Math.sin(-Math.PI / 10) }; // Espelhado à esquerda
+
+    return `${p1.x.toFixed(1)},${p1.y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)} ${p3.x.toFixed(1)},${p3.y.toFixed(1)} ${p4.x.toFixed(1)},${p4.y.toFixed(1)} ${p5.x.toFixed(1)},${p5.y.toFixed(1)}`;
+}
+
+function atualizarDatabookCard() {
+    // 1. Renderizar o radar de habilidades dinamicamente
+    const radarPoly = document.getElementById("radar-value-poly");
+    if (radarPoly) {
+        const pointsString = calcularCoordenadasRadar(ninjaStats);
+        radarPoly.setAttribute("points", pointsString);
+    }
+
+    // 2. Preencher a tabela de missões dinamicamente
+    let sRank = 0;
+    let aRank = 0; // Jounin
+    let bRank = 0; // Chuunin
+    let cRank = 0; // Genin
+    let dRank = typeof minhasSkills !== "undefined" ? minhasSkills.length : 0; // Skills totais
+
+    if (typeof projetos !== "undefined") {
+        projetos.forEach(projeto => {
+            if (projeto.status === "Concluída") {
+                if (projeto.rank === "Jounin") {
+                    aRank++;
+                } else if (projeto.rank === "Chuunin") {
+                    bRank++;
+                } else if (projeto.rank === "Genin") {
+                    cRank++;
+                }
+            }
+        });
+    }
+
+    mostrarTexto("m-s-count", sRank);
+    mostrarTexto("m-a-count", aRank);
+    mostrarTexto("m-b-count", bRank);
+    mostrarTexto("m-c-count", cRank);
+    mostrarTexto("m-d-count", dRank);
 }
 
 function mostrarTipos() {
@@ -203,49 +283,56 @@ function verificarAprovacao(nota) {
 
 function mostrarNota(nota) {
     let resultado = verificarAprovacao(nota);
+    criarAlerta(`
+        <strong>📜 Relatório da Academia</strong><br>
+        Nota: <span class="destaque-nota">${nota}</span> — Status: <span class="destaque-status">${resultado}</span>
+    `, 'relatorio');
+}
 
-    document.write(`
-        <p>Nota: ${nota} - ${resultado}</p>
-    `);
+function mostrarDiaSemana() {
+    const DATAATUAL = pegarDataAtual();
+    let diaNumero = DATAATUAL.getDay() + 1;
+    let diaTexto = obterDiaSemana(diaNumero);
+    criarAlerta(`
+        <strong>📅 Data Ninja</strong><br>
+        Hoje é: <span class="destaque-data">${diaTexto}</span>
+    `, 'data');
+}
+
+function criarAlerta(conteudo, tipo) {
+    // Remove alertas antigos do mesmo tipo (opcional)
+    const antigos = document.querySelectorAll(`.alerta-ninja-${tipo}`);
+    antigos.forEach(el => el.remove());
+
+    const div = document.createElement('div');
+    div.className = `alerta-ninja alerta-ninja-${tipo}`;
+    div.innerHTML = conteudo;
+    document.body.appendChild(div);
 }
 
 function obterDiaSemana(numero) {
     switch (numero) {
-        case 1:
-            return "Domingo";
-
-        case 2:
-            return "Segunda-feira";
-
-        case 3:
-            return "Terça-feira";
-
-        case 4:
-            return "Quarta-feira";
-
-        case 5:
-            return "Quinta-feira";
-
-        case 6:
-            return "Sexta-feira";
-
-        case 7:
-            return "Sábado";
-
-        default:
-            return "Dia inválido";
+        case 1: return "Domingo";
+        case 2: return "Segunda-feira";
+        case 3: return "Terça-feira";
+        case 4: return "Quarta-feira";
+        case 5: return "Quinta-feira";
+        case 6: return "Sexta-feira";
+        case 7: return "Sábado";
+        default: return "Dia inválido";
     }
 }
 
 function mostrarDiaSemana() {
     const DATAATUAL = pegarDataAtual();
-
     let diaNumero = DATAATUAL.getDay() + 1;
-
     let diaTexto = obterDiaSemana(diaNumero);
 
     document.write(`
-        <p>Hoje é: ${diaTexto}</p>
+        <div class="alerta-ninja" style="margin-top: 110px !important;">
+            <strong>📅 Data Ninja</strong>
+            Hoje é: <span class="destaque-data">${diaTexto}</span>
+        </div>
     `);
 }
 
@@ -304,9 +391,9 @@ function exibirCla() {
         hyuga: pontosHyuga,
         uzumaki: pontosUzumaki
     };
-    
+
     let clanMax = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-    
+
     if (clanMax === "uchiha") {
         resultadoQuiz.innerHTML = "<strong>🔴 Seu Clã: Uchiha (Front-End - Criatividade Visual)</strong>";
     } else if (clanMax === "senju") {
@@ -403,16 +490,20 @@ paragrafos.forEach((paragrafo, index) => {
 });
 
 function criarSkill(skill) {
+    // Suporte a objetos estruturados (novo) ou strings simples (retrocompat)
+    let emoji = "📜";
+    let label = skill;
+    let chakraClass = "";
+
+    if (typeof skill === "object" && skill !== null) {
+        emoji = skill.emoji || "📜";
+        label = skill.label || "";
+        chakraClass = skill.chakra || "";
+    }
+
     let elemento = document.createElement("div");
-
-    elemento.textContent = skill;
-
-    elemento.style.padding = "8px";
-    elemento.style.margin = "4px";
-    elemento.style.backgroundColor = "#3c8ac6";
-    elemento.style.color = "#fff";
-    elemento.style.borderRadius = "4px";
-
+    elemento.className = `jutsu-badge ${chakraClass}`;
+    elemento.innerHTML = `<span class="jutsu-emoji">${emoji}</span><span class="jutsu-label">${label}</span>`;
     return elemento;
 }
 
@@ -523,7 +614,7 @@ atualizarProjetosFiltrados();
 
 function calcularPontuacaoNinja() {
     let pontosTotal = 0;
-    
+
     // Contar pontos por missão completada
     projetos.forEach(projeto => {
         if (projeto.status === "Concluída") {
@@ -536,7 +627,7 @@ function calcularPontuacaoNinja() {
             }
         }
     });
-    
+
     return pontosTotal;
 }
 
@@ -560,12 +651,12 @@ function atualizarPontuacaoNinja() {
     const missoesCompletas = contarMissoesCompletas();
     const maxPontos = 12; // 3 missões * 3 pontos máximo = 9, mas colocamos 12 para margem
     const percentual = Math.min((pontos / maxPontos) * 100, 100);
-    
+
     document.getElementById("pontosTotais").textContent = pontos;
     document.getElementById("nivelNinja").textContent = nivel;
     document.getElementById("missoesCompletas").textContent = missoesCompletas;
     document.getElementById("barraProgresso").style.width = percentual + "%";
-    
+
     let textoProgresso = "";
     if (pontos < 4) {
         textoProgresso = `${pontos}/4 pontos para Chuunin`;
@@ -574,7 +665,7 @@ function atualizarPontuacaoNinja() {
     } else {
         textoProgresso = `Parabéns! Você alcançou o nível máximo! 🎉`;
     }
-    
+
     document.getElementById("textoProgresso").textContent = textoProgresso;
 }
 
@@ -586,89 +677,86 @@ atualizarTempo();
 setInterval(atualizarTempo, 1000);
 
 //api Naruto
+// Lista de 100 personagens famosos
+const ninjasFamosos = [
+    "Naruto Uzumaki", "Sasuke Uchiha", "Sakura Haruno", "Kakashi Hatake",
+    "Itachi Uchiha", "Minato Namikaze", "Jiraiya", "Orochimaru",
+    "Tsunade", "Gaara", "Hinata Hyuga", "Rock Lee",
+    "Neji Hyuga", "Shikamaru Nara", "Madara Uchiha", "Obito Uchiha",
+    "Pain", "Konan", "Killer Bee", "Hashirama Senju",
+    "Tobirama Senju", "Hiruzen Sarutobi", "Sai", "Yamato",
+    "Temari", "Kankurō", "Might Guy", "Asuma Sarutobi",
+    "Kurenai Yūhi", "Shino Aburame", "Kiba Inuzuka", "Chōji Akimichi",
+    "Ino Yamanaka", "Tenten", "Hidan", "Kakuzu",
+    "Deidara", "Sasori", "Kisame Hoshigaki", "Zetsu",
+    "Nagato", "Konohamaru Sarutobi", "Mitsuki", "Boruto Uzumaki",
+    "Sarada Uchiha", "Himawari Uzumaki", "Kawaki", "Shikadai Nara",
+    "Inojin Yamanaka", "Chōchō Akimichi", "Metal Lee", "Toneri Ōtsutsuki",
+    "Momoshiki Ōtsutsuki", "Kinshiki Ōtsutsuki", "Urashiki Ōtsutsuki", "Kaguya Ōtsutsuki",
+    "Hagoromo Ōtsutsuki", "Hamura Ōtsutsuki", "Indra Ōtsutsuki", "Ashura Ōtsutsuki",
+    "Dan Katō", "Shisui Uchiha", "Fugaku Uchiha", "Mikoto Uchiha",
+    "Izuna Uchiha", "Rin Nohara", "Yahiko", "Jūgo",
+    "Suigetsu Hōzuki", "Karin", "Kushina Uzumaki", "Mito Uzumaki",
+    "Haku", "Zabuza Momochi", "Kimimaro", "Kabuto Yakushi",
+    "Third Raikage", "Fourth Raikage (A)", "Darui", "Kurotsuchi",
+    "Onoki", "Mū", "Pakura", "Rasa",
+    "Chiyo", "Anko Mitarashi", "Ibiki Morino", "Iruka Umino",
+    "Mizuki", "Kotetsu Hagane", "Izumo Kamizuke", "Aoba Yamashiro",
+    "Shizune", "Tonbo Tobitake", "Might Duy", "Akamaru"
+];
+
 async function carregarNinja() {
+    const statusElement = document.getElementById("statusNinja");
+    if (statusElement) statusElement.innerText = "🔄 Buscando ninja lendário...";
+
     try {
-        // Gera ID aleatório
-        let id = Math.floor(Math.random() * 1431) + 1;
-
-        // Busca personagem
-        const resposta = await fetch(
-            `https://dattebayo-api.onrender.com/characters/${id}`,
-        );
-
-        // Converte JSON
+        const resposta = await fetch('https://dattebayo-api.onrender.com/characters?limit=150');
         const dados = await resposta.json();
 
-        console.log(dados);
+        const personagensEncontrados = dados.characters.filter(character =>
+            ninjasFamosos.includes(character.name)
+        );
 
-        // Nome do personagem
-        let nome = dados.name ? dados.name : "Ninja desconhecido";
+        if (personagensEncontrados.length === 0) {
+            const randomIndex = Math.floor(Math.random() * dados.characters.length);
+            exibirPersonagem(dados.characters[randomIndex]);
+            if (statusElement) statusElement.innerText = "⚠️ Nenhum famoso encontrado, exibindo ninja aleatório.";
+            return;
+        }
 
-        // Imagem
-        let imagem =
-            dados.images && dados.images.length > 0
-                ? dados.images[0]
-                : "https://via.placeholder.com/300";
-
-        // Clã
-        let clan = dados.personal?.clan ? dados.personal.clan : "Desconhecido";
-
-        // Vila
-        let vila = dados.personal?.affiliation
-            ? dados.personal.affiliation
-            : "Desconhecida";
-
-        let rank = dados.rank ? dados.rank : "Desconhecido";
-        let jutsus = dados.jutsus && dados.jutsus.length > 0
-            ? dados.jutsus.join(", ")
-            : "Não informado";
-
-        // Exibe card
-        document.getElementById("ninja").innerHTML = `
-
-<div class="cardNaruto">
-
-    <img
-        src="${imagem}"
-        alt="${dados.name}"
-    >
-
-    <div class="infoNaruto">
-
-        <h2>${dados.name}</h2>
-
-        <p>
-            <strong>Clã:</strong>
-            ${clan}
-        </p>
-
-        <p>
-            <strong>Vila:</strong>
-            ${vila}
-        </p>
-
-        <p>
-            <strong>Rank:</strong>
-            ${rank}
-        </p>
-
-        <p>
-            <strong>Jutsus:</strong>
-            ${jutsus}
-        </p>
-
-    </div>
-
-</div>
-`;
-
+        const randomIndex = Math.floor(Math.random() * personagensEncontrados.length);
+        const personagem = personagensEncontrados[randomIndex];
+        exibirPersonagem(personagem);
+        if (statusElement) statusElement.innerText = "✅ Ninja lendário invocado!";
     } catch (erro) {
-        console.log("Erro ao carregar ninja:", erro);
+        console.error("Erro na invocação:", erro);
+        if (statusElement) statusElement.innerText = "❌ Falha na invocação. Tente novamente!";
+        document.getElementById("ninja").innerHTML = "<p style='color: red; text-align: center;'>Falha ao carregar o perfil do ninja.</p>";
     }
 }
 
-const btnNinja = document.getElementById("btnNinja");
+function exibirPersonagem(dados) {
+    let imagem = dados.images && dados.images.length > 0 ? dados.images[0] : "https://via.placeholder.com/300";
+    let clan = dados.personal?.clan ? dados.personal.clan : "Desconhecido";
+    let vila = dados.personal?.affiliation ? dados.personal.affiliation : "Desconhecida";
+    let rank = dados.rank?.ninjaRank ? (typeof dados.rank.ninjaRank === 'object' ? Object.values(dados.rank.ninjaRank)[0] : dados.rank.ninjaRank) : "Desconhecido";
+    let jutsus = dados.jutsu && dados.jutsu.length > 0 ? dados.jutsu.slice(0, 3).join(", ") : "Não informado";
 
+    document.getElementById("ninja").innerHTML = `
+        <div class="cardNaruto">
+            <img src="${imagem}" alt="${dados.name}">
+            <div class="infoNaruto">
+                <h2>${dados.name}</h2>
+                <p><strong>Clã:</strong> ${clan}</p>
+                <p><strong>Vila:</strong> ${vila}</p>
+                <p><strong>Rank:</strong> ${rank}</p>
+                <p><strong>Jutsus:</strong> ${jutsus}</p>
+            </div>
+        </div>
+    `;
+}
+
+const btnNinja = document.getElementById("btnNinja");
 btnNinja.addEventListener("click", carregarNinja);
 
 /*---------------------- SHARINGAN -----------------*/
@@ -676,7 +764,7 @@ const sharingans = document.querySelectorAll(".sharingan");
 
 sharingans.forEach((sharinganOlho) => {
     const pupila = sharinganOlho.querySelector(".pupila");
-    
+
     if (pupila && sharinganOlho) {
         let targetX = 0;
         let targetY = 0;
@@ -710,3 +798,26 @@ sharingans.forEach((sharinganOlho) => {
         animatePupila();
     }
 });
+
+// ───────────────── MÚSICA DE FUNDO ─────────────────
+const btnMusic = document.getElementById("btnMusic");
+const bgMusic = document.getElementById("bgMusic");
+
+if (btnMusic && bgMusic) {
+    // Configura o volume inicial da música (opcional, 0.5 = 50%)
+    bgMusic.volume = 0.4;
+
+    btnMusic.addEventListener("click", () => {
+        const musicText = btnMusic.querySelector(".music-text");
+
+        if (bgMusic.paused) {
+            bgMusic.play();
+            btnMusic.classList.add("playing");
+            musicText.textContent = "Pause";
+        } else {
+            bgMusic.pause();
+            btnMusic.classList.remove("playing");
+            musicText.textContent = "Play";
+        }
+    });
+}
