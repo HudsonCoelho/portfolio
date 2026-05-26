@@ -70,6 +70,7 @@ section {
 }
 
 #bioCompleto {
+  font-family: "Outfit", sans-serif;
   background: rgba(255, 140, 0, 0.08);
   border: 1px solid rgba(255, 140, 0, 0.2);
   border-radius: 24px;
